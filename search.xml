@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Flink部署之Standalone模式</title>
+    <url>/2022/04/05/Flink%E9%83%A8%E7%BD%B2%E4%B9%8BStandalone%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>Flink有多种部署方式，在生产环境可以选择Standalone、Flink on yarn、Flink on k8s，本次先介绍Standalone方式</p>
+<span id="more"></span>]]></content>
+      <categories>
+        <category>Flink</category>
+      </categories>
+      <tags>
+        <tag>Flink</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>创建win后台任务定时用Python代码发邮件</title>
+    <url>/2022/04/18/%E5%88%9B%E5%BB%BAwin%E5%90%8E%E5%8F%B0%E4%BB%BB%E5%8A%A1%E5%AE%9A%E6%97%B6%E7%94%A8Python%E4%BB%A3%E7%A0%81%E5%8F%91%E9%82%AE%E4%BB%B6/</url>
+    <content><![CDATA[<span id="more"></span>
+<h2 id="1、先根据自己的需求完成邮件发送python任务测试"><a href="#1、先根据自己的需求完成邮件发送python任务测试" class="headerlink" title="1、先根据自己的需求完成邮件发送python任务测试"></a>1、先根据自己的需求完成邮件发送python任务测试</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> docx</span><br><span class="line"><span class="keyword">from</span> smtplib <span class="keyword">import</span> SMTP_SSL</span><br><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span> MIMEText</span><br><span class="line"><span class="keyword">from</span> email.mime.multipart <span class="keyword">import</span> MIMEMultipart</span><br><span class="line"><span class="keyword">from</span> email.header <span class="keyword">import</span> Header</span><br><span class="line"><span class="keyword">from</span> email.mime.application <span class="keyword">import</span> MIMEApplication</span><br><span class="line"><span class="keyword">from</span> apscheduler.schedulers.blocking <span class="keyword">import</span> BlockingScheduler</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> loguru <span class="keyword">import</span> logger</span><br><span class="line"><span class="keyword">import</span> yaml</span><br><span class="line"><span class="comment"># 添加日志记录</span></span><br><span class="line">logger.add(<span class="string">&quot;info.log&quot;</span>, <span class="built_in">format</span>=<span class="string">&quot;&#123;time:YYYY-MM-DD at HH:mm:ss&#125; | &#123;level&#125; | &#123;message&#125;&quot;</span>, level=<span class="string">&#x27;INFO&#x27;</span>, rotation=<span class="string">&quot;500 MB&quot;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">logger.add(<span class="string">&quot;error.log&quot;</span>, <span class="built_in">format</span>=<span class="string">&quot;&#123;time:YYYY-MM-DD at HH:mm:ss&#125; | &#123;level&#125; | &#123;message&#125;&quot;</span>, level=<span class="string">&#x27;ERROR&#x27;</span>, rotation=<span class="string">&quot;500 MB&quot;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sz_task</span>():</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">r&#x27;配置yaml文件路径&#x27;</span>, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> emailFile:</span><br><span class="line">        conf = yaml.load(emailFile)</span><br><span class="line">    <span class="comment"># 邮箱stmp域名</span></span><br><span class="line">    host_server = conf[<span class="string">&#x27;host_server&#x27;</span>]</span><br><span class="line">    <span class="comment"># 发送者邮箱</span></span><br><span class="line">    sender_mail = conf[<span class="string">&#x27;sender_mail&#x27;</span>]</span><br><span class="line">    <span class="comment"># 授权码</span></span><br><span class="line">    pwd = conf[<span class="string">&#x27;pwd&#x27;</span>]</span><br><span class="line">    <span class="comment"># 接收者邮箱列表</span></span><br><span class="line">    receivers_mail = conf[<span class="string">&#x27;receivers_mail&#x27;</span>]</span><br><span class="line">    <span class="comment"># 抄送者邮箱列表</span></span><br><span class="line">    cc_mail = conf[<span class="string">&#x27;cc_mail&#x27;</span>]   </span><br><span class="line">    file = docx.Document(<span class="string">r&quot;附件文件路径&quot;</span>)</span><br><span class="line">    title = 邮件标题</span><br><span class="line">    mail_content = 邮件正文拼接</span><br><span class="line">    msg = MIMEMultipart(<span class="string">&#x27;mixed&#x27;</span>)</span><br><span class="line">    msg[<span class="string">&#x27;Subject&#x27;</span>] = Header(title, <span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    msg[<span class="string">&#x27;From&#x27;</span>] = sender_mail</span><br><span class="line">    msg[<span class="string">&#x27;To&#x27;</span>] = <span class="string">&#x27;;&#x27;</span>.join(receivers_mail)</span><br><span class="line">    msg[<span class="string">&#x27;Cc&#x27;</span>] = <span class="string">&#x27;;&#x27;</span>.join(cc_mail)   </span><br><span class="line">    body = MIMEText(mail_content, <span class="string">&#x27;plain&#x27;</span>)</span><br><span class="line">    msg.attach(body)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">r&quot;附件文件路径&quot;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        attachment = MIMEApplication(f.read())</span><br><span class="line">    attachment.add_header(<span class="string">&#x27;Content-Disposition&#x27;</span>, <span class="string">&#x27;attachment&#x27;</span>, filename=附件文件名)</span><br><span class="line">    msg.attach(attachment)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        smtp = SMTP_SSL(host_server, <span class="number">465</span>)</span><br><span class="line">        smtp.set_debuglevel(<span class="number">1</span>)</span><br><span class="line">        smtp.login(sender_mail, pwd)</span><br><span class="line">        smtp.sendmail(sender_mail, receivers_mail + cc_mail, msg.as_string()) </span><br><span class="line">        logger.info(<span class="string">&#x27;发送成功&#x27;</span>)</span><br><span class="line">    <span class="keyword">except</span>:     </span><br><span class="line">        logger.error(<span class="string">&quot;发送失败&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定时任务</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">shedu_task</span>():</span><br><span class="line">    sheduler = BlockingScheduler()</span><br><span class="line">    sheduler.add_job(sz_task, <span class="string">&#x27;cron&#x27;</span>, hour=XX, minute=XX)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        sheduler.start()</span><br><span class="line">    <span class="keyword">except</span> (KeyboardInterrupt, SystemExit):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    shedu_task()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2、使用pyinstaller工具将py文件打包成exe文件"><a href="#2、使用pyinstaller工具将py文件打包成exe文件" class="headerlink" title="2、使用pyinstaller工具将py文件打包成exe文件"></a>2、使用pyinstaller工具将py文件打包成exe文件</h2><figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line">pip <span class="keyword">install</span> pyinstaller</span><br></pre></td></tr></table></figure>
+<p>然后打包exe文件</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">pyinstaller</span> -F XX.py</span><br></pre></td></tr></table></figure>
+<h2 id="3、使用sc工具写成win服务，后台启动"><a href="#3、使用sc工具写成win服务，后台启动" class="headerlink" title="3、使用sc工具写成win服务，后台启动"></a>3、使用sc工具写成win服务，后台启动</h2><p>打开powershell，输入以下</p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">sc.exe create 服务名自定义 binPath=<span class="string">&quot;EXE文件路径&quot;</span></span><br><span class="line">net start 服务名自定义 <span class="regexp">//</span>启动服务或者在任务管理起启用</span><br><span class="line">sc.exe <span class="keyword">delete</span> 服务名自定义 <span class="regexp">//</span>删除后台服务（选）</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>邮件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>动态规划理论基础</title>
+    <url>/2022/04/05/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<span id="more"></span>
+<h2 id="动归五步曲"><a href="#动归五步曲" class="headerlink" title="动归五步曲"></a>动归五步曲</h2><p>动态规划（Dynamic Programming），简称DP，一般将动态规划问题中用到的数组命名为DP数组。动态规划问题中存在多个子结构或者子问题，所以最重要的就是理解当前状态如何从上一个状态推导出来。<br>在学习了卡尔哥的<a href="https://www.programmercarl.com/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80.html#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E8%A7%A3%E9%A2%98%E6%AD%A5%E9%AA%A4">动态规划五步曲</a>后，能够对解决动态规划问题理解更加深刻。</p>
+<ol>
+<li>确定DP数组的含义，包括DP和下标i代表什么</li>
+<li>确定递推公示，当前状态如何从前面的状态得到</li>
+<li>DP数组如何初始化，有可能只要初始化部分DP值，也可能需要全部初始化</li>
+<li>确定遍历顺序</li>
+<li>举例推导DP数组<h2 id="debug动归问题灵魂三问"><a href="#debug动归问题灵魂三问" class="headerlink" title="debug动归问题灵魂三问"></a>debug动归问题灵魂三问</h2></li>
+</ol>
+<ul>
+<li>是否举例推导递推公式了？</li>
+<li>是否打印DP数组了？</li>
+<li>打印的DP数组和预想的是否一样？</li>
+</ul>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>高级</tag>
+      </tags>
+  </entry>
+</search>
