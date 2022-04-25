@@ -58,4 +58,88 @@
         <tag>高级</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Linux下pyflink环境搭建</title>
+    <url>/2022/04/25/Linux%E4%B8%8Bpyflink%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<h2 id="Centos7环境下替换Python2为Python3"><a href="#Centos7环境下替换Python2为Python3" class="headerlink" title="Centos7环境下替换Python2为Python3"></a>Centos7环境下替换Python2为Python3</h2><p>在一般的Centos7镜像环境下，内置的Python都是2.x版本，而PyFlink环境都需要3.5, 3.6, 3.7 或 3.8，所以首先需要把系统的Python版本升级为3.5+，而不影响系统本身对于Python2的依赖。</p>
+<span id="more"></span>
+<ol>
+<li>安装系统依赖<blockquote>
+<p>yum install openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel libffi-devel</p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<ol start="2">
+<li>下载Python3.7.3的安装包<blockquote>
+<p>wget <a href="https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz">https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz</a></p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<ol start="3">
+<li>解压<blockquote>
+<p>tar -xzvf Python-3.7.3.tgz</p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<ol start="4">
+<li>安装到&#x2F;usr&#x2F;local路径<blockquote>
+<p>cd Python-3.7.3<br>.&#x2F;configure –prefix&#x3D;&#x2F;usr&#x2F;local&#x2F;python3<br>make &amp;&amp; make install</p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<ol start="5">
+<li>验证<blockquote>
+<p>.&#x2F;python3.7 -V</p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<ol start="6">
+<li>备份Python2<blockquote>
+<p>cd &#x2F;usr&#x2F;bin<br>mv python python.bak</p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<ol start="7">
+<li>创建软连接<blockquote>
+<p>ln -s &#x2F;usr&#x2F;local&#x2F;python3&#x2F;bin&#x2F;python3.7 &#x2F;usr&#x2F;bin&#x2F;python<br>python -V</p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<ol start="8">
+<li>解决Python2的系统依赖问题</li>
+</ol>
+<ul>
+<li>更改yum脚本的Python依赖<blockquote>
+<p>vi &#x2F;usr&#x2F;bin&#x2F;yum<br>#!&#x2F;usr&#x2F;bin&#x2F;python 改为 #!&#x2F;usr&#x2F;bin&#x2F;python2<br>yum install tree</p>
+</blockquote>
+</li>
+<li>修改urlgrabber配置文件<blockquote>
+<p>vi &#x2F;usr&#x2F;libexec&#x2F;urlgrabber-ext-down<br>#!&#x2F;usr&#x2F;bin&#x2F;python 改为 #!&#x2F;usr&#x2F;bin&#x2F;python2</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="配置PyFlink运行环境"><a href="#配置PyFlink运行环境" class="headerlink" title="配置PyFlink运行环境"></a>配置PyFlink运行环境</h2><ol>
+<li>PyFlink已经被发布到PyPi，可以通过如下方式安装PyFlink：<blockquote>
+<p>pip install apache-flink&#x3D;&#x3D;1.14.4</p>
+</blockquote>
+</li>
+<li>安装pyflink依赖<blockquote>
+<p>pip install pyflink</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="Flink集群环境搭建"><a href="#Flink集群环境搭建" class="headerlink" title="Flink集群环境搭建"></a>Flink集群环境搭建</h2><ol>
+<li>flink集群升级到1.12版本以上</li>
+<li>pyflink依赖目录下的jar包，添加到flink安装目录下lib目录中。</li>
+<li>启动flink集群</li>
+</ol>
+]]></content>
+  </entry>
 </search>
